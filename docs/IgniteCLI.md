@@ -13,4 +13,9 @@ Ignite CLI version:     v0.25.1
 ## start the chain 
 ignite chain serve
 
-## 
+## commands
+ignite scaffold module
+ignite scaffold message 
+ignite scaffold list
+
+
