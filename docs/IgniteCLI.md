@@ -14,8 +14,14 @@ Ignite CLI version:     v0.25.1
 ignite chain serve
 
 ## commands
-ignite scaffold module
-ignite scaffold message 
-ignite scaffold list
+`ignite scaffold module`
+
+`ignite scaffold message`
+
+ignite  scaffold message createPost
 
 
+`ignite scaffold list` create a list type of objects
+
+
+`ignite scaffold packet ibcPost` for ibc packet definition
