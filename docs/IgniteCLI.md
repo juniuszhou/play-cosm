@@ -18,7 +18,7 @@ ignite chain serve
 
 `ignite scaffold message`
 
-ignite  scaffold message createPost
+ignite scaffold message postBlog title:string id:int
 
 
 `ignite scaffold list` create a list type of objects
