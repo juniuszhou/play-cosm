@@ -1,4 +1,5 @@
 packages/
-.keys/
-
+.keys
+**/.keys
 **/target/
+**/node_modules

@@ -12,6 +12,14 @@ https://book.cosmwasm.com/
 
 
 
+### feature list
+1. call other contract
+2. trigger the method defined in bank module
+3. trigger the custom method like post blog in blog chain
+4. trigger the ibc communication 
+5. type script to test against wasm 
+6. type script to test against ibc
+7. gas computing and used.
 
 
 ### code could be pinned in memory
