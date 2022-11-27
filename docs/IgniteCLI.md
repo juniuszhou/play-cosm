@@ -24,4 +24,6 @@ ignite scaffold message postBlog title:string id:int
 `ignite scaffold list` create a list type of objects
 
 
-`ignite scaffold packet ibcPost` for ibc packet definition
+## add a new ibc packet 
+`ignite scaffold packet ibcPost title content --ack postID` for ibc packet definition
+
