@@ -30,3 +30,17 @@ This way code does not have to be loaded to memory on each execution thus makes 
 This is an estimation, needs to be benchmarked.
 
 Code pinning is done through native chain governance.
+
+
+## relayer management 
+admin account
+ibc message trusted 
+denom mapping from outside to internal 
+
+from eth to cosmos 
+validators and threshold , power 
+
+denom, from chain_id, ethereum address, map to ics20 contract address. 
+
+user can burn the peggy contract 
+use can lock issued token 

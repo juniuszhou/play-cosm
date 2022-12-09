@@ -1,19 +1,22 @@
 use cosmwasm_std::{
     entry_point, Binary, Deps, DepsMut, Empty, Env, MessageInfo, Response, StdResult,
 };
+use error::ContractError;
 
 mod contract;
 mod msg;
+mod state;
+mod error;
 
 #[entry_point]
-pub fn instantiate(deps: DepsMut, env: Env, info: MessageInfo, msg: Empty)
+pub fn instantiate(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::InstantiateMsg)
   -> StdResult<Response>
 {
     contract::instantiate(deps, env, info, msg)
 }
 
 #[entry_point]
-pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::ExecuteMsg) -> StdResult<Response> {
+pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::ExecuteMsg) -> Result<Response, ContractError> {
     contract::execute(deps, env, info, msg)
 }
 
@@ -56,6 +59,8 @@ mod tests {
     fn greet_query() {
         let mut app = App::default();
 
+        let admin_address = Addr::unchecked("cosmos1address");
+
         let code = ContractWrapper::new(execute, instantiate, query);
         let code_id = app.store_code(Box::new(code));
 
@@ -63,12 +68,13 @@ mod tests {
             .instantiate_contract(
                 code_id,
                 Addr::unchecked("owner"),
-                &Empty {},
+                &InstantiateMsg {admin: admin_address.to_string()},
                 &[],
                 "Contract",
                 None,
             )
             .unwrap();
+        
 
         let resp: GreetResp = app
             .wrap()

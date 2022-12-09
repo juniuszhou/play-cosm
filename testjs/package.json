@@ -19,6 +19,7 @@
 		"@cosmjs/stargate": "^0.25.5",
 		"cosmjs-types": "^0.5.2",
 		"@types/node": "^15.3.1",
+		"@cosmwasm/sdk": "^0.8.1",
 		"dotenv": "^9.0.2"
 	},
 	"devDependencies": {
