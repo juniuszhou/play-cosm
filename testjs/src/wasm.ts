@@ -2,6 +2,7 @@ import {CosmWasmClient, SigningCosmWasmClient, BroadcastMode} from "@cosmwasm/sd
 
 const contract_root = "/Users/junius/github/junius/play-cosm/contracts"
 const rpc = "http://0.0.0.0:1317"
+
 // address for alice
 const address = "wasm1wslklgldzdzmqkx95se2m3sj5hnecgrk4szf6r"
 
@@ -22,3 +23,5 @@ async function get_code() {
 
 
 get_code()
+
+// get a cosmwasm client and deploy contract 
