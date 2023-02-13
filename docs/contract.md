@@ -9,9 +9,6 @@ https://book.cosmwasm.com/
 `wasmd query wasm contract-state `
 
 
-
-
-
 ### feature list
 1. call other contract
 2. trigger the method defined in bank module
