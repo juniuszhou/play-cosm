@@ -12,6 +12,9 @@ serde = { version = "1.0.147"}
 cw-controllers = {version = "0.16.0"}
 cw-storage-plus = "0.16.0"
 thiserror = { version = "1.0.23" }
+cw2 = { version = "1.0.0" }
+semver = "*"
 
 [dev-dependencies]
-cw-multi-test = { version = "*"}
+cw-multi-test = { version = "0.16.0"}
+

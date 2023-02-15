@@ -22,4 +22,14 @@ pub enum ContractError {
 
     #[error("Message contained duplicate member: {member}")]
     DuplicateMember { member: String },
+
+    #[error("Semver parsing error: {0}")]
+    SemVer(String),
 }
+
+impl From<semver::Error> for ContractError {
+    fn from(err: semver::Error) -> Self {
+        Self::SemVer(err.to_string())
+    }
+}
+

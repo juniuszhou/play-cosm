@@ -2,6 +2,9 @@ use cosmwasm_std::{
     entry_point, Binary, Deps, DepsMut, Empty, Env, MessageInfo, Response, StdResult,
 };
 use error::ContractError;
+use semver::Version;
+
+use cw2::{get_contract_version, set_contract_version};
 
 mod contract;
 mod msg;
@@ -31,21 +34,19 @@ pub fn query(deps: Deps, env: Env, msg: msg::QueryMsg)
 const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
-// #[entry_point]
-// pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> Result<Response, ContractError> {
-//     let version: Version = CONTRACT_VERSION.parse()?;
-//     let storage_version: Version = get_contract_version(deps.storage)?.version.parse()?;
+#[entry_point]
+pub fn migrate(deps: DepsMut, _env: Env, msg: Empty) -> Result<Response, ContractError> {
+    let version: Version = CONTRACT_VERSION.parse()?;
+    let storage_version: Version = get_contract_version(deps.storage)?.version.parse()?;
 
-//     if storage_version < version {
-//         set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
+    if storage_version < version {
+        set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
-//         // If state structure changed in any contract version in the way migration is needed, it
-//         // should occur here
-//     }
-//     Ok(Response::default())
-// }
-
-
+        // If state structure changed in any contract version in the way migration is needed, it
+        // should occur here
+    }
+    Ok(Response::default())
+}
 
 #[cfg(test)]
 mod tests {
