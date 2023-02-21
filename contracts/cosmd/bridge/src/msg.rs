@@ -1,55 +1,54 @@
-use serde::{Deserialize, Serialize};
+use cosmwasm_schema::{cw_serde, QueryResponses};
+use cw_controllers::AdminResponse;
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+// For bridge contract, we need admin to do lot of things.
+// So use the sender as default admin, can update it via admin interface
+#[cw_serde]
 pub struct InstantiateMsg {
-    pub admin: String,
 }
 
+#[cw_serde]
+pub enum ExecuteMsg {
+    Execute {},
+    UpdateAdmin { admin: String },
+}
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
+#[derive(QueryResponses)]
+pub enum QueryMsg {
+    #[returns(GreetResp)]
+    Greet {},
+    #[returns(AdminResponse)]
+    QueryAdmin {},
+}
+
+#[cw_serde]
+pub struct QueryAdmin {}
+
+#[cw_serde]
 pub struct GreetResp {
     pub message: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub enum ExecuteMsg {
-    Execute {},
-    UpdateAdmin {admin: String},
-}
-
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub enum QueryMsg {
-    Greet {},
-    QueryAdmin {},
-    QueryMyMap { key: u64},
-    QueryMyItem {},
-}
-
-
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct QueryAdmin {
-}
-
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct QueryMyMap {
     pub key: u64,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct QueryMyMapResp {
     pub result: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct QueryMyItem {
-}
+#[cw_serde]
+pub struct QueryMyItem {}
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct QueryMyItemResp {
     pub result: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct UpdateAdmin {
     pub admin: String,
 }
