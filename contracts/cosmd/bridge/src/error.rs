@@ -22,4 +22,7 @@ pub enum ContractError {
 
     #[error("Message contained duplicate member: {member}")]
     DuplicateMember { member: String },
+
+    #[error("Ethereum address is not valid: {address}")]
+    InvalidEthereumAddress { address: String },
 }

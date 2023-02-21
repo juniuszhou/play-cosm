@@ -8,6 +8,7 @@ mod query;
 pub mod error;
 pub mod msg;
 mod state;
+mod utils;
 
 #[cfg(test)]
 mod tests;
