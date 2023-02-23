@@ -9,13 +9,13 @@ pub enum ContractError {
     Std(#[from] StdError),
 
     #[error("{0}")]
+    Overflow(#[from] OverflowError),
+
+    #[error("{0}")]
     Hook(#[from] HookError),
 
     #[error("{0}")]
     Admin(#[from] AdminError),
-
-    #[error("{0}")]
-    Overflow(#[from] OverflowError),
 
     #[error("Unauthorized")]
     Unauthorized {},
@@ -24,6 +24,7 @@ pub enum ContractError {
     DuplicateMember { member: String },
 
     #[error("Semver parsing error: {0}")]
+    // SemVer(#[from] semver::Error),
     SemVer(String),
 }
 

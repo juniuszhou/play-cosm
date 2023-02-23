@@ -1,6 +1,6 @@
 #[cfg(not(feature = "library"))]
 
-use crate::msg::{InstantiateMsg, GreetResp, QueryMsg, UpdateAdmin, ExecuteMsg, QueryAdmin, QueryMyMap};
+use crate::message::{InstantiateMsg, GreetResp, QueryMsg, UpdateAdmin, ExecuteMsg, QueryAdmin, QueryMyMap};
 use crate::state::{ADMIN, MYMAP, MYITEM};
 use crate::error::ContractError;
 

@@ -1,55 +1,64 @@
 use serde::{Deserialize, Serialize};
+use cosmwasm_schema::{cw_serde, QueryResponses};
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct InstantiateMsg {
     pub admin: String,
 }
 
-
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-pub struct GreetResp {
-    pub message: String,
-}
-
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub enum ExecuteMsg {
     Execute {},
     UpdateAdmin {admin: String},
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
+#[derive(QueryResponses)]
 pub enum QueryMsg {
+    #[returns(GreetResp)]
     Greet {},
+    #[returns(GreetResp)]
     QueryAdmin {},
+    #[returns(GreetResp)]
     QueryMyMap { key: u64},
+    #[returns(GreetResp)]
     QueryMyItem {},
 }
 
+#[cw_serde]
+pub struct Greet {
+    pub message: String,
+}
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
+pub struct GreetResp {
+    pub message: String,
+}
+
+#[cw_serde]
 pub struct QueryAdmin {
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct QueryMyMap {
     pub key: u64,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct QueryMyMapResp {
     pub result: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct QueryMyItem {
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct QueryMyItemResp {
     pub result: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cw_serde]
 pub struct UpdateAdmin {
     pub admin: String,
 }

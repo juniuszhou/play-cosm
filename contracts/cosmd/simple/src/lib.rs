@@ -1,5 +1,5 @@
 use cosmwasm_std::{
-    entry_point, Binary, Deps, DepsMut, Empty, Env, MessageInfo, Response, StdResult,
+    entry_point, Binary, Deps, DepsMut, Empty, Env, MessageInfo, Response, StdResult, to_binary
 };
 use error::ContractError;
 use semver::Version;
@@ -7,27 +7,37 @@ use semver::Version;
 use cw2::{get_contract_version, set_contract_version};
 
 mod contract;
-mod msg;
+mod message;
 mod state;
 mod error;
 
+#[cfg(test)]
+mod test;
+
 #[entry_point]
-pub fn instantiate(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::InstantiateMsg)
+pub fn instantiate(deps: DepsMut, env: Env, info: MessageInfo, msg: message::InstantiateMsg)
   -> StdResult<Response>
 {
     contract::instantiate(deps, env, info, msg)
 }
 
 #[entry_point]
-pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: msg::ExecuteMsg) -> Result<Response, ContractError> {
+pub fn execute(deps: DepsMut, env: Env, info: MessageInfo, msg: message::ExecuteMsg) -> Result<Response, ContractError> {
     contract::execute(deps, env, info, msg)
 }
 
 #[entry_point]
-pub fn query(deps: Deps, env: Env, msg: msg::QueryMsg)
+pub fn query(deps: Deps, env: Env, msg: message::QueryMsg)
   -> StdResult<Binary>
 {
-    contract::query(deps, env, msg)
+    // match msg.clone() {
+    //     Empty => contract::query(deps, env, Empty),
+    //     _ => contract::query(deps, env, msg),
+    //
+    // }
+    let item = state::MYITEM.load(deps.storage)?;
+    to_binary(&item)
+    // contract::query(deps, env, msg)
 }
 
 
@@ -46,47 +56,4 @@ pub fn migrate(deps: DepsMut, _env: Env, msg: Empty) -> Result<Response, Contrac
         // should occur here
     }
     Ok(Response::default())
-}
-
-#[cfg(test)]
-mod tests {
-    use msg::*;
-    use cosmwasm_std::Addr;
-    use cw_multi_test::{App, ContractWrapper, Executor};
-
-    use super::*;
-
-    #[test]
-    fn greet_query() {
-        let mut app = App::default();
-
-        let admin_address = Addr::unchecked("cosmos1address");
-
-        let code = ContractWrapper::new(execute, instantiate, query);
-        let code_id = app.store_code(Box::new(code));
-
-        let addr = app
-            .instantiate_contract(
-                code_id,
-                Addr::unchecked("owner"),
-                &InstantiateMsg {admin: admin_address.to_string()},
-                &[],
-                "Contract",
-                None,
-            )
-            .unwrap();
-        
-
-        let resp: GreetResp = app
-            .wrap()
-            .query_wasm_smart(addr, &QueryMsg::Greet {})
-            .unwrap();
-
-        assert_eq!(
-            resp,
-            GreetResp {
-                message: "Hello World".to_owned()
-            }
-        );
-    }
 }
