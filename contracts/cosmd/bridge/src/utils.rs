@@ -1,8 +1,8 @@
-use cosmwasm_std::{SubMsg, Response, WasmMsg, ReplyOn, to_binary};
+use cosmwasm_std::{SubMsg, Response, WasmMsg, ReplyOn, to_binary, instantiate2_address};
 use ethaddr::{Address};
 use crate::error::ContractError;
 use cw20_base::msg::InstantiateMsg;
-use cw20::MinterResponse;
+use cw20::{Balance, MinterResponse,};
 
 // use crate::msg::InstantiateMsg;
 
@@ -15,6 +15,7 @@ pub fn string_to_eth_address(address: &str) -> Result<Address, ContractError> {
     } )
 }
 
+// https://github.com/CosmWasm/cosmwasm/blob/v1.2.1/contracts/virus/src/contract.rs#L71-L78
 pub fn create_cw20_contract(code_id: u64, msg: InstantiateMsg) -> Result<Response, ContractError> {
     let resp = Response::new();
     let sub_msg: Vec<SubMsg> = vec![SubMsg {

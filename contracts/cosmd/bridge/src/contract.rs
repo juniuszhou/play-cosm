@@ -5,11 +5,14 @@ use crate::msg::{
 };
 use crate::state::ADMIN;
 use crate::query::greet;
+use crate::utils::string_to_eth_address;
 
-use cosmwasm_std::entry_point;
 use cosmwasm_std::{
     to_binary, Binary, Deps, DepsMut, Empty, Env, Event, MessageInfo, Response, StdResult,
+    SubMsg, BankMsg, Addr, WasmMsg, entry_point
+
 };
+use cw20::Balance;
 use cw_storage_plus::Bound;
 
 pub fn instantiate(
@@ -50,6 +53,44 @@ pub fn execute(
                 .add_attribute("added_count", "three");
 
             Ok(resp)
+        }
+        ExecuteMsg::Lock {balances, receiver} => {
+            // check if receiver is valid ethereum address
+            string_to_eth_address(&receiver)?;
+
+            let address = env.contract.address.clone();
+            // let self_address = Addr::try_from(address).map_err(|_| ContractError::Unauthorized {})?;
+                // env.contract.address.clone();
+            let mut msgs: Vec<SubMsg> = vec![];
+
+            for balance in balances.iter() {
+                match balance {
+                    Balance::Native(native) => {
+                        let message = BankMsg::Send {
+                            to_address: address.clone().into_string(),
+                            amount: native.0.clone(),
+
+                        };
+                        msgs.push(SubMsg::new(message));
+
+                    },
+                    Balance::Cw20(cw20_token) => {
+                        let transfer = cw20::Cw20ExecuteMsg::Transfer {
+                            recipient: address.to_string().clone(),
+                            amount: cw20_token.amount,
+                        };
+                        let message = SubMsg::new(WasmMsg::Execute {
+                            contract_addr: address.clone().into_string(),
+                            msg: to_binary(&transfer)?,
+                            funds: vec![],
+                        });
+                        msgs.push(message);
+                    }
+                }
+            }
+
+            Ok(Response::new().add_submessages(msgs))
+
         }
     }
 }

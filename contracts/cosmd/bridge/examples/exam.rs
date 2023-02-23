@@ -1,5 +1,4 @@
 use ethaddr::{Address};
-use cw20::InstantiateMsg;
 
 fn main() {
 
