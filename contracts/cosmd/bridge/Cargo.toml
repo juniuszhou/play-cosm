@@ -12,6 +12,7 @@ cosmwasm-schema = "1.2.0"
 serde = { version = "1.0.147"}
 cw-controllers = {version = "1.0.1" }
 cw-storage-plus = "1.0.1"
+cw-utils = "1.0.0"
 thiserror = { version = "1.0.23" }
 ethaddr = {verson = "0.1.2", default-features = false}
 cw20-base = "1.0.0"

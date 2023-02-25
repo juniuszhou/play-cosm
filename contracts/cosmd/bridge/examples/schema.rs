@@ -1,5 +1,5 @@
+use bridge::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
 use cosmwasm_schema::write_api;
-use bridge::msg::{InstantiateMsg, QueryMsg, ExecuteMsg};
 
 fn main() {
     write_api! {

@@ -1,8 +1,8 @@
-use cosmwasm_std::{SubMsg, Response, WasmMsg, ReplyOn, to_binary, instantiate2_address};
-use ethaddr::{Address};
 use crate::error::ContractError;
+use cosmwasm_std::{instantiate2_address, to_binary, ReplyOn, Response, SubMsg, WasmMsg};
+use cw20::{Balance, MinterResponse};
 use cw20_base::msg::InstantiateMsg;
-use cw20::{Balance, MinterResponse,};
+use ethaddr::Address;
 
 // use crate::msg::InstantiateMsg;
 
@@ -10,9 +10,11 @@ use cw20::{Balance, MinterResponse,};
 const INSTANTIATE_TOKEN_REPLY_ID: u64 = 1;
 
 pub fn string_to_eth_address(address: &str) -> Result<Address, ContractError> {
-    address.parse::<Address>().map_err(|_| ContractError::InvalidEthereumAddress {
-        address: String::from(address)
-    } )
+    address
+        .parse::<Address>()
+        .map_err(|_| ContractError::InvalidEthereumAddress {
+            address: String::from(address),
+        })
 }
 
 // https://github.com/CosmWasm/cosmwasm/blob/v1.2.1/contracts/virus/src/contract.rs#L71-L78
@@ -31,14 +33,13 @@ pub fn create_cw20_contract(code_id: u64, msg: InstantiateMsg) -> Result<Respons
                     cap: None,
                 }),
                 marketing: None,
-
             })?,
             funds: vec![],
             admin: None,
             label: String::from("Astroport LP token"),
             salt: [0; 1].into(),
         }
-            .into(),
+        .into(),
         id: INSTANTIATE_TOKEN_REPLY_ID,
         gas_limit: None,
         reply_on: ReplyOn::Success,

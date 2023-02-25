@@ -1,33 +1,32 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cw_controllers::AdminResponse;
-use cosmwasm_std::{Coin, Addr};
+use cosmwasm_std::{Addr, Coin};
 use cw20::Balance;
+use cw_controllers::AdminResponse;
 
 // For bridge contract, we need admin to do lot of things.
 // So use the sender as default admin, can update it via admin interface
 #[cw_serde]
-pub struct InstantiateMsg {
-}
+pub struct InstantiateMsg {}
 
 #[cw_serde]
 pub enum ExecuteMsg {
     Execute {},
-    UpdateAdmin { admin: String },
+    UpdateAdmin {
+        admin: String,
+    },
     Lock {
         balances: Vec<Balance>,
-        receiver: String
+        receiver: String,
     },
     // Burn {
     //     address: Addr,
     //     amount: u128,
-    // }
+    // },
 }
 
 #[cw_serde]
 #[derive(QueryResponses)]
 pub enum QueryMsg {
-    #[returns(GreetResp)]
-    Greet {},
     #[returns(AdminResponse)]
     QueryAdmin {},
 }

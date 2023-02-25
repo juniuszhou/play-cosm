@@ -4,9 +4,9 @@ use cosmwasm_std::{
 use error::ContractError;
 
 mod contract;
-mod query;
 pub mod error;
 pub mod msg;
+mod response;
 mod state;
 mod utils;
 
