@@ -5,6 +5,7 @@ use crate::msg::{
 };
 use crate::state::ADMIN;
 use crate::utils::string_to_eth_address;
+use crate::{NATIVE_TOKEN_LOCK, CW20_TOKEN_LOCK};
 
 use cosmwasm_std::{
     entry_point, to_binary, Addr, Attribute, BankMsg, Binary, Deps, DepsMut, Empty, Env, Event,
@@ -57,6 +58,9 @@ pub fn execute(
             string_to_eth_address(&receiver)?;
 
             let self_address = env.contract.address.clone();
+
+            let admin = ADMIN.get(deps.as_ref()).unwrap().unwrap();
+
             // let self_address = Addr::try_from(address).map_err(|_| ContractError::Unauthorized {})?;
             // env.contract.address.clone();
             let mut msgs: Vec<SubMsg> = vec![];
@@ -67,21 +71,17 @@ pub fn execute(
                 attributes.push(Attribute::new(fund.denom, fund.amount));
             }
 
-            let event = Event::new("native_token_transfer").add_attributes(attributes);
+            let native_event = Event::new(NATIVE_TOKEN_LOCK).add_attributes(attributes);
+
+            let mut attributes: Vec<Attribute> = vec![];
 
             for balance in balances.iter() {
                 match balance {
                     // we can't handle native since there is no transfer from method.
                     // we should already get native token from funds.
                     // just add them in event, then relayer can handle it
-                    Balance::Native(native) => {
+                    Balance::Native(_) => {
 
-                        // let message = BankMsg::Send {
-                        //     to_address: self_address.clone().into_string(),
-                        //     amount: native.0.clone(),
-                        //
-                        // };
-                        // msgs.push(SubMsg::new(message));
                     }
                     Balance::Cw20(cw20_token) => {
                         let transfer = cw20::Cw20ExecuteMsg::TransferFrom {
@@ -90,16 +90,23 @@ pub fn execute(
                             amount: cw20_token.amount,
                         };
                         let message = SubMsg::new(WasmMsg::Execute {
-                            contract_addr: self_address.clone().into_string(),
+                            contract_addr: cw20_token.address.to_string(),
                             msg: to_binary(&transfer)?,
                             funds: vec![],
                         });
+
                         msgs.push(message);
+
+                        attributes.push( Attribute::new(cw20_token.address.to_string(), cw20_token.amount.to_string()));
                     }
                 }
             }
+            let cw20_event = Event::new(CW20_TOKEN_LOCK).add_attributes(attributes);
 
-            Ok(Response::new().add_submessages(msgs))
+            Ok(Response::new().add_submessages(msgs).add_events(vec![
+                native_event,
+                cw20_event,
+            ]))
         }
     }
 }
@@ -108,7 +115,6 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     use QueryMsg::*;
 
     match msg {
-
         // call admin member method to get admin account
         QueryAdmin {} => to_binary(&ADMIN.query_admin(deps)?),
     }

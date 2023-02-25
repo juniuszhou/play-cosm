@@ -41,6 +41,9 @@ pub fn query(deps: Deps, env: Env, msg: msg::QueryMsg) -> StdResult<Binary> {
 const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
 const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
+const NATIVE_TOKEN_LOCK: &str = "native_token_lock";
+const CW20_TOKEN_LOCK: &str = "cw20_token_lock";
+
 // #[entry_point]
 // pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> Result<Response, ContractError> {
 //     let version: Version = CONTRACT_VERSION.parse()?;
