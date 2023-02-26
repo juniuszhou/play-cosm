@@ -17,6 +17,7 @@ thiserror = { version = "1.0.23" }
 ethaddr = {verson = "0.1.2", default-features = false}
 cw20-base = "1.0.0"
 cw20 = "1.0.0"
+cw2 = "1.0.0"
 
 [dev-dependencies]
 cw-multi-test = { version = "0.16.2" }

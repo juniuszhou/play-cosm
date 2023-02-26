@@ -28,4 +28,7 @@ pub enum ContractError {
 
     #[error("Token burned not bridge CW20: {address}")]
     BurnNoneBridgeToken { address: String },
+
+    #[error("Failed to create bridge cw20 contract")]
+    FailToCreateBridgeCW20Token {},
 }

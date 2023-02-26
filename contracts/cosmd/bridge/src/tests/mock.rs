@@ -7,9 +7,11 @@ use cw20::{AllowanceResponse, BalanceResponse, Cw20Coin};
 use cw20_base::contract::{execute, instantiate, query};
 use cw20_base::msg::{ExecuteMsg as Cw20ExecuteMsg, InstantiateMsg, QueryMsg};
 
-use cosmwasm_std::{to_binary, Addr, Uint128};
+use cosmwasm_std::{testing::MockStorage, to_binary, Addr, Deps, DepsMut, Uint128};
 
 use crate::msg::ExecuteMsg;
+use crate::state::BRIDGE_TOKEN;
+
 use cw_multi_test::{App, BasicApp, ContractWrapper, Executor};
 
 // https://github.com/CosmWasm/cosmwasm/blob/v1.2.1/contracts/virus/src/contract.rs#L71-L78
