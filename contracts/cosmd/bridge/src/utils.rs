@@ -6,7 +6,7 @@ use cosmwasm_std::{
     StdError, StdResult, Storage, WasmMsg,
 };
 use cw20::MinterResponse;
-use cw20_base::msg::InstantiateMsg;
+use cw20_base::msg::InstantiateMsg as Cw20InstantiateMsg;
 use ethaddr::Address;
 
 // use crate::msg::InstantiateMsg;
@@ -38,7 +38,7 @@ pub fn create_cw20_contract(deps: Deps, admin: &str, code_id: u64) -> StdResult<
     let cw20_address = instantiate2_address(&checksum, &admin_address, &salt)
         .map_err(|_| StdError::generic_err(""))?;
     let cw20_address = deps.api.addr_humanize(&cw20_address)?;
-    let message = InstantiateMsg {
+    let message = Cw20InstantiateMsg {
         name: "bridge-token".to_string(),
         symbol: "bridge-token".to_string(),
         decimals: 18,

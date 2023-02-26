@@ -1,6 +1,5 @@
 use cosmwasm_std::{OverflowError, StdError};
 use thiserror::Error;
-
 use cw_controllers::{AdminError, HookError};
 
 #[derive(Error, Debug, PartialEq)]
