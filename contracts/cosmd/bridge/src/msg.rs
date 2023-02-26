@@ -1,6 +1,6 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::{Addr, Coin};
-use cw20::Balance;
+use cw20::{Balance, Cw20CoinVerified};
 use cw_controllers::AdminResponse;
 
 // For bridge contract, we need admin to do lot of things.
@@ -18,10 +18,10 @@ pub enum ExecuteMsg {
         balances: Vec<Balance>,
         receiver: String,
     },
-    // Burn {
-    //     address: Addr,
-    //     amount: u128,
-    // },
+    Burn {
+        balances: Vec<Cw20CoinVerified>,
+        receiver: String,
+    },
 }
 
 #[cw_serde]

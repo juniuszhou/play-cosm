@@ -4,13 +4,10 @@ use crate::msg::{
     ExecuteMsg, GreetResp, InstantiateMsg, QueryAdmin, QueryMsg, QueryMyMap, UpdateAdmin,
 };
 use crate::state::ADMIN;
-use crate::utils::string_to_eth_address;
-use crate::{NATIVE_TOKEN_LOCK, CW20_TOKEN_LOCK};
+use crate::utils::{string_to_eth_address, is_bridge_token,};
+use crate::{NATIVE_TOKEN_LOCK, CW20_TOKEN_LOCK, CW20_TOKEN_BURN};
 
-use cosmwasm_std::{
-    entry_point, to_binary, Addr, Attribute, BankMsg, Binary, Deps, DepsMut, Empty, Env, Event,
-    MessageInfo, Response, StdResult, SubMsg, WasmMsg,
-};
+use cosmwasm_std::{entry_point, to_binary, Addr, Attribute, BankMsg, Binary, Deps, DepsMut, Empty, Env, Event, MessageInfo, Response, StdResult, SubMsg, WasmMsg, Uint128};
 use cw20::Balance;
 use cw_storage_plus::Bound;
 
@@ -52,6 +49,37 @@ pub fn execute(
                 .add_attribute("added_count", "three");
 
             Ok(resp)
+        }
+
+        ExecuteMsg::Burn { balances, receiver } => {
+            string_to_eth_address(&receiver)?;
+
+            let mut messages: Vec<SubMsg> = vec![];
+            let mut attributes: Vec<Attribute> = vec![];
+
+            for balance in balances.iter() {
+                if !is_bridge_token(deps.as_ref(), &balance.address) {
+                    return Err(ContractError::BurnNoneBridgeToken {address: balance.address.to_string()});
+                }
+
+                let burn = cw20::Cw20ExecuteMsg::BurnFrom {
+                    owner: info.sender.to_string(),
+                    amount: Uint128::from(balance.amount),
+                };
+
+                let message = SubMsg::new(WasmMsg::Execute {
+                    contract_addr: balance.address.to_string(),
+                    msg: to_binary(&burn)?,
+                    funds: vec![],
+                });
+                messages.push(message);
+                attributes.push(Attribute::new(balance.address.to_string(), balance.amount.to_string()));
+            }
+
+            let burn_event = Event::new(CW20_TOKEN_BURN).add_attributes(attributes);
+
+            Ok(Response::new().add_submessages(messages).add_event(burn_event))
+
         }
         ExecuteMsg::Lock { balances, receiver } => {
             // check if receiver is valid ethereum address

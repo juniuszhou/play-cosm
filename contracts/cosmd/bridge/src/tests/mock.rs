@@ -12,6 +12,7 @@ use cosmwasm_std::{to_binary, Addr, Uint128};
 use crate::msg::ExecuteMsg;
 use cw_multi_test::{App, BasicApp, ContractWrapper, Executor};
 
+// https://github.com/CosmWasm/cosmwasm/blob/v1.2.1/contracts/virus/src/contract.rs#L71-L78
 pub fn create_cw20_contract(app: &mut BasicApp, admin: &Addr) -> Addr {
     let code = ContractWrapper::new(execute, instantiate, query);
     let code_id = app.store_code(Box::new(code));

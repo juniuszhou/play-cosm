@@ -25,4 +25,7 @@ pub enum ContractError {
 
     #[error("Ethereum address is not valid: {address}")]
     InvalidEthereumAddress { address: String },
+
+    #[error("Token burned not bridge CW20: {address}")]
+    BurnNoneBridgeToken { address: String },
 }

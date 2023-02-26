@@ -43,6 +43,7 @@ const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 const NATIVE_TOKEN_LOCK: &str = "native_token_lock";
 const CW20_TOKEN_LOCK: &str = "cw20_token_lock";
+const CW20_TOKEN_BURN: &str = "cw20_token_burn";
 
 // #[entry_point]
 // pub fn migrate(deps: DepsMut, _env: Env, msg: MigrateMsg) -> Result<Response, ContractError> {
