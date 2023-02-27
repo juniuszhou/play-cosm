@@ -12,7 +12,7 @@ use cw2::set_contract_version;
 use crate::msg::CosmosToken;
 use cosmwasm_std::{
     entry_point, to_binary, Attribute, BankMsg, Binary, Deps, DepsMut, Env, Event,
-    MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg,
+    MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg, CodeInfoResponse
 };
 use cw20::{Balance, Cw20CoinVerified};
 
@@ -116,10 +116,14 @@ fn execute_bridge_claim(
                     match get_cw20_via_eth_address(deps.storage, &claim.token_address.to_string()) {
                         Some(addr) => addr,
                         None => {
+                            let CodeInfoResponse { checksum, .. } = deps.querier.query_wasm_code_info(code_id)?;
                             let (address, message) = create_cw20_contract(
-                                deps.as_ref(),
+                                deps.storage,
+                                deps.api,
+                                // deps.storage,
                                 &env.contract.address.to_string(),
                                 code_id,
+                                checksum,
                             )
                             .map_err(|_| ContractError::FailToCreateBridgeCW20Token {})?;
                             messages.push(SubMsg::new(message));

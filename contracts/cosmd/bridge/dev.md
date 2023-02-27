@@ -1,17 +1,13 @@
-# features for bridge 
-
-## admin account
+# features for bridge
 
 ## relayers account
-
-## token management 
-
-## token lock burn
-
-## token import from ethereum
 
 ## ibc support 
 
 ## upgrade 
 
-## 
+## multiple evm chain support
+
+## test improvement, both internal and message
+
+## more query method to get status of bridge
