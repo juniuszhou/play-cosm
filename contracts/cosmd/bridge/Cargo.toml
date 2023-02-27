@@ -32,7 +32,8 @@ cw-storage-plus = "1.0.1"
 cw-utils = "1.0.0"
 thiserror = { version = "1.0.23" }
 ethaddr = {verson = "0.1.2", default-features = false}
-cw20-base = "1.0.0"
+# must use the feature library to disable all instantiate/execute/query exports
+cw20-base = {version = "1.0.0", features = ["library"]}
 cw20 = "1.0.0"
 cw2 = "1.0.0"
 

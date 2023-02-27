@@ -9,7 +9,7 @@ use super::mock::{
     ETH_ADDRESS,
 };
 use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::{execute, instantiate, query};
+use crate::contract::{execute, instantiate, query};
 
 #[test]
 fn test_burn() {

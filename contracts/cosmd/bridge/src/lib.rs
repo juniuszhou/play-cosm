@@ -4,7 +4,7 @@ use cosmwasm_std::{Binary, Deps, DepsMut, Env, MessageInfo, Response, StdResult,
 
 // never put contract mod in lib. otherwise it can't pass cargo wasm
 // there are conflicts about instantiate/query/execute with other cw20 lib
-// mod contract;
+pub mod contract;
 pub mod error;
 pub mod msg;
 mod response;
