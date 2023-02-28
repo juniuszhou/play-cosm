@@ -1,11 +1,11 @@
-use crate::state::{get_cw20_via_eth_address, add_bridge_token,};
-use crate::utils::is_bridge_token;
 use crate::state::BRIDGE_TOKEN;
+use crate::state::{add_bridge_token, get_cw20_via_eth_address};
+use crate::utils::is_bridge_token;
 
+use super::mock::ETH_ADDRESS;
 use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
 use cosmwasm_std::Addr;
 use cw_multi_test::{App, ContractWrapper, Executor};
-use super::mock::ETH_ADDRESS;
 
 // test everything from internal never use the message
 #[test]

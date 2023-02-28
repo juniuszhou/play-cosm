@@ -1,5 +1,5 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::{Coin};
+use cosmwasm_std::Coin;
 use cw20::{Balance, Cw20CoinVerified};
 use cw_controllers::AdminResponse;
 

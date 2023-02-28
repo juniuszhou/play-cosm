@@ -1,18 +1,16 @@
 use crate::error::ContractError;
-#[cfg(not(feature = "library"))]
-use crate::msg::{
-    EthClaim, ExecuteMsg, InstantiateMsg, QueryMsg,
-};
+// #[cfg(not(feature = "library"))]
+use crate::msg::{EthClaim, ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::state::{add_bridge_token, get_cw20_via_eth_address, ADMIN};
 use crate::utils::{create_cw20_contract, is_bridge_token, string_to_eth_address};
-use crate::{CW20_TOKEN_BURN, CW20_TOKEN_LOCK, NATIVE_TOKEN_LOCK};
 use crate::{CONTRACT_NAME, CONTRACT_VERSION};
+use crate::{CW20_TOKEN_BURN, CW20_TOKEN_LOCK, NATIVE_TOKEN_LOCK};
 use cw2::set_contract_version;
 
-use crate::msg::CosmosToken;
+use crate::msg::{QueryAdmin, CosmosToken};
 use cosmwasm_std::{
-    entry_point, to_binary, Attribute, BankMsg, Binary, Deps, DepsMut, Env, Event,
-    MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg, CodeInfoResponse
+    entry_point, to_binary, Attribute, BankMsg, Binary, CodeInfoResponse, Deps, DepsMut, Env,
+    Event, MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg,
 };
 use cw20::{Balance, Cw20CoinVerified};
 
@@ -95,7 +93,7 @@ fn execute_bridge_claim(
                     CosmosToken::CW20(cw20) => {
                         let transfer = cw20::Cw20ExecuteMsg::Transfer {
                             recipient: claim.receiver.to_string(),
-                            amount: Uint128::from(claim.amount),
+                            amount: Uint128::from(cw20.amount),
                         };
 
                         let message = SubMsg::new(WasmMsg::Execute {
@@ -112,26 +110,29 @@ fn execute_bridge_claim(
                 // query the cw20 for eth token address
                 // create new cw20 if not created before
                 // mint token for receiver
-                let cw20_address =
-                    match get_cw20_via_eth_address(deps.storage, &claim.token_address.to_string()) {
-                        Some(addr) => addr,
-                        None => {
-                            let CodeInfoResponse { checksum, .. } = deps.querier.query_wasm_code_info(code_id)?;
-                            let (address, message) = create_cw20_contract(
-                                deps.storage,
-                                deps.api,
-                                // deps.storage,
-                                &env.contract.address.to_string(),
-                                code_id,
-                                checksum,
-                            )
-                            .map_err(|_| ContractError::FailToCreateBridgeCW20Token {})?;
-                            messages.push(SubMsg::new(message));
-                            // add new created cw20 token into state
-                            add_bridge_token(deps.storage, &claim.token_address, &address)?;
-                            address
-                        }
-                    };
+                let cw20_address = match get_cw20_via_eth_address(
+                    deps.storage,
+                    &claim.token_address.to_string(),
+                ) {
+                    Some(addr) => addr,
+                    None => {
+                        let CodeInfoResponse { checksum, .. } =
+                            deps.querier.query_wasm_code_info(code_id)?;
+                        let (address, message) = create_cw20_contract(
+                            deps.storage,
+                            deps.api,
+                            // deps.storage,
+                            &env.contract.address.to_string(),
+                            code_id,
+                            checksum,
+                        )
+                        .map_err(|_| ContractError::FailToCreateBridgeCW20Token {})?;
+                        messages.push(SubMsg::new(message));
+                        // add new created cw20 token into state
+                        add_bridge_token(deps.storage, &claim.token_address, &address)?;
+                        address
+                    }
+                };
 
                 let mint = cw20::Cw20ExecuteMsg::Mint {
                     recipient: claim.receiver.to_string(),
@@ -147,7 +148,7 @@ fn execute_bridge_claim(
             }
         }
     }
-    Ok(Response::new())
+    Ok(Response::new().add_submessages(messages))
 }
 
 fn execute_burn(

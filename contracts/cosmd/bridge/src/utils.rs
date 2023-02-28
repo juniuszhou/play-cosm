@@ -1,7 +1,10 @@
 use crate::error::ContractError;
-use crate::state::{BRIDGE_TOKEN, get_next_bridge_token_index, update_bridge_token_index,};
+use crate::state::{get_next_bridge_token_index, update_bridge_token_index, BRIDGE_TOKEN};
 
-use cosmwasm_std::{instantiate2_address, to_binary, Api, Addr, Binary, CodeInfoResponse, Deps, StdError, StdResult, Storage, WasmMsg, DepsMut, HexBinary};
+use cosmwasm_std::{
+    instantiate2_address, to_binary, Addr, Api, Binary, CodeInfoResponse, Deps, DepsMut, HexBinary,
+    StdError, StdResult, Storage, WasmMsg,
+};
 use cw20::MinterResponse;
 use cw20_base::msg::InstantiateMsg as Cw20InstantiateMsg;
 use ethaddr::Address;
@@ -23,14 +26,16 @@ pub fn is_bridge_token(storage: &dyn Storage, address: &Addr) -> bool {
 }
 
 // https://github.com/CosmWasm/cosmwasm/blob/v1.2.1/contracts/virus/src/contract.rs#L71-L78
-pub fn create_cw20_contract(storage: &mut dyn Storage, api: &dyn Api, admin: &str, code_id: u64, checksum: HexBinary) -> StdResult<(Addr, WasmMsg)> {
-    // let index = 0_i64;
-
+pub fn create_cw20_contract(
+    storage: &mut dyn Storage,
+    api: &dyn Api,
+    admin: &str,
+    code_id: u64,
+    checksum: HexBinary,
+) -> StdResult<(Addr, WasmMsg)> {
     let index = get_next_bridge_token_index(storage);
 
     let cw20_path = format!("{DERIVE_CW20}/{index}");
-
-    // let CodeInfoResponse { checksum, .. } = deps.querier.query_wasm_code_info(code_id)?;
 
     let salt = Binary::from(cw20_path.as_bytes());
     let admin_address = api.addr_canonicalize(admin)?;
@@ -50,7 +55,10 @@ pub fn create_cw20_contract(storage: &mut dyn Storage, api: &dyn Api, admin: &st
         }),
         marketing: None,
     };
+
     update_bridge_token_index(storage)?;
+
+    // return cw20 address and message to create it.
     Ok((
         cw20_address,
         WasmMsg::Instantiate2 {

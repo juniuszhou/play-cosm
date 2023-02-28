@@ -1,6 +1,6 @@
+use cosmwasm_std::{Addr, StdResult, Storage};
 use cw_controllers::Admin;
 use cw_storage_plus::{Item, Map};
-use cosmwasm_std::{Addr, StdResult, Storage};
 
 // define state via Admin struct define in controllers package
 pub const ADMIN: Admin = Admin::new("admin");
@@ -25,8 +25,10 @@ pub fn add_bridge_token(
     Ok(())
 }
 
-pub fn get_cw20_via_eth_address(storage: & dyn Storage, eth_address: &str) -> Option<Addr> {
-    ETH_ADDRESS_TO_CW20.load(storage, eth_address.to_string()).ok()
+pub fn get_cw20_via_eth_address(storage: &dyn Storage, eth_address: &str) -> Option<Addr> {
+    ETH_ADDRESS_TO_CW20
+        .load(storage, eth_address.to_string())
+        .ok()
 }
 
 pub fn get_next_bridge_token_index(storage: &mut dyn Storage) -> u64 {
@@ -38,10 +40,7 @@ pub fn get_next_bridge_token_index(storage: &mut dyn Storage) -> u64 {
 
 pub fn update_bridge_token_index(storage: &mut dyn Storage) -> StdResult<()> {
     let next = get_next_bridge_token_index(storage);
-    BRIDGE_TOKEN_INDEX.update(storage, |_| -> StdResult<_> {
-        Ok(next)
-    })?;
+    BRIDGE_TOKEN_INDEX.update(storage, |_| -> StdResult<_> { Ok(next) })?;
 
     Ok(())
 }
-
