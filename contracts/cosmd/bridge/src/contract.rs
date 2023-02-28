@@ -7,7 +7,7 @@ use crate::{CONTRACT_NAME, CONTRACT_VERSION};
 use crate::{CW20_TOKEN_BURN, CW20_TOKEN_LOCK, NATIVE_TOKEN_LOCK};
 use cw2::set_contract_version;
 
-use crate::msg::{QueryAdmin, CosmosToken};
+use crate::msg::{CosmosToken, QueryAdmin};
 use cosmwasm_std::{
     entry_point, to_binary, Attribute, BankMsg, Binary, CodeInfoResponse, Deps, DepsMut, Env,
     Event, MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg,

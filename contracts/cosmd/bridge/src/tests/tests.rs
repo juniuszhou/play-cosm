@@ -71,8 +71,13 @@ fn test_bridge_claim_native() {
         }],
     };
 
-    app.execute_contract(sender.clone(), contract_addr.clone(), &claim_message, &vec![])
-        .unwrap();
+    app.execute_contract(
+        sender.clone(),
+        contract_addr.clone(),
+        &claim_message,
+        &vec![],
+    )
+    .unwrap();
 
     let contract_balance = app
         .wrap()
