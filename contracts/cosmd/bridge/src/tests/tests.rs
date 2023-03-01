@@ -10,6 +10,66 @@ use super::mock::{
 };
 use crate::contract::{execute, instantiate, query};
 use crate::msg::{CosmosToken, EthClaim, ExecuteMsg, InstantiateMsg, QueryMsg};
+use crate::tests::mock::CW20_AMOUNT;
+
+#[test]
+fn test_bridge_claim_cw20() {
+    let sender = Addr::unchecked("sender");
+    let admin = Addr::unchecked("admin");
+    let receiver = Addr::unchecked("receiver");
+    let init_amount = 100;
+    let claim_amount = 10_u128;
+
+    let mut app = App::default();
+
+    let code = ContractWrapper::new(execute, instantiate, query);
+    let code_id = app.store_code(Box::new(code));
+    let contract_addr = app
+        .instantiate_contract(
+            code_id,
+            admin,
+            &InstantiateMsg {},
+            &[],
+            "Contract",
+            // this admin ignored, don't know how to use it.
+            None,
+        )
+        .unwrap();
+
+    let cw20_address = create_cw20_contract(&mut app, &contract_addr);
+
+    let contract_balance = query_cw20_balance(&app, &cw20_address, &contract_addr);
+
+    assert_eq!(contract_balance.u128(), CW20_AMOUNT);
+
+    let claim_message = ExecuteMsg::BridgeClaim {
+        claims: vec![EthClaim {
+            claim_hash: "00".to_string(),
+            token_address: ETH_ADDRESS.to_string(),
+            cosmos_token: Some(CosmosToken::CW20(Cw20CoinVerified {
+                address: cw20_address.clone(),
+                amount: Uint128::from(claim_amount),
+            })),
+            receiver: receiver.to_string(),
+            amount: 0_u128,
+        }],
+    };
+
+    app.execute_contract(
+        sender.clone(),
+        contract_addr.clone(),
+        &claim_message,
+        &vec![],
+    )
+    .unwrap();
+
+    let contract_balance = query_cw20_balance(&mut app, &cw20_address, &contract_addr);
+    assert_eq!(contract_balance.u128(), init_amount - claim_amount);
+
+    let receiver_balance = query_cw20_balance(&app, &cw20_address, &receiver);
+
+    assert_eq!(receiver_balance.u128(), claim_amount);
+}
 
 #[test]
 fn test_bridge_claim_native() {
