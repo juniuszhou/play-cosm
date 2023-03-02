@@ -8,7 +8,9 @@ use crate::{CW20_TOKEN_BURN, CW20_TOKEN_LOCK, NATIVE_TOKEN_LOCK};
 use cw2::set_contract_version;
 
 use crate::msg::{CosmosToken, QueryAdmin};
-use cosmwasm_std::{entry_point, to_binary, Attribute, BankMsg, Binary, CodeInfoResponse, Deps, DepsMut, Env, Event, MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg, HexBinary};
+use cosmwasm_std::{entry_point, to_binary, Attribute, BankMsg, Binary, CodeInfoResponse, Deps, DepsMut,
+                   Env, Event, MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg, HexBinary,
+                   ContractInfoResponse,};
 use cw20::{Balance, Cw20CoinVerified};
 // use crate::tests::mock::get_cw20_code_id;
 
@@ -76,7 +78,12 @@ fn execute_bridge_claim(
     _info: MessageInfo,
     claims: &Vec<EthClaim>,
 ) -> Result<Response, ContractError> {
-    let code_id = get_cw20_code_id(deps.storage).map_err(|_| ContractError::Unauthorized{})?;
+    let cw20_code_id = get_cw20_code_id(deps.storage).map_err(|_| ContractError::Unauthorized{})?;
+
+    let ContractInfoResponse { code_id, .. } = deps
+        .querier
+        .query_wasm_contract_info(env.contract.address)?;
+
     let mut messages: Vec<SubMsg> = vec![];
 
     for claim in claims.iter() {
@@ -122,9 +129,9 @@ fn execute_bridge_claim(
                     Some(addr) => addr,
                     None => {
                         let CodeInfoResponse { checksum, .. } =
-                            deps.querier.query_wasm_code_info(code_id)?;
+                            deps.querier.query_wasm_code_info(cw20_code_id)?;
 
-                        let checksum = HexBinary::from(&[0]);
+                        // let checksum = HexBinary::from(&[0]);
 
                         let (address, message) = create_cw20_contract(
                             deps.storage,

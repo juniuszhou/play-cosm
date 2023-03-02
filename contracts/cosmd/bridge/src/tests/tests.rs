@@ -13,6 +13,8 @@ use crate::msg::{CosmosToken, EthClaim, ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::tests::mock::CW20_AMOUNT;
 use crate::state::{set_cw20_via_eth_address,};
 
+
+
 #[test]
 fn test_bridge_claim_new_erc20() {
     let sender = Addr::unchecked("sender");
