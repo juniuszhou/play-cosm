@@ -1,31 +1,30 @@
 use crate::error::ContractError;
 // #[cfg(not(feature = "library"))]
-use crate::msg::{EthClaim, ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::state::{add_bridge_token, get_cw20_via_eth_address, ADMIN};
+use crate::msg::{EthClaim, ExecuteMsg, InstantiateMsg, QueryMsg, Cw20AddressResponse};
+use crate::state::{add_bridge_token, get_cw20_via_eth_address, set_cw20_code_id, get_cw20_code_id, ADMIN};
 use crate::utils::{create_cw20_contract, is_bridge_token, string_to_eth_address};
 use crate::{CONTRACT_NAME, CONTRACT_VERSION};
 use crate::{CW20_TOKEN_BURN, CW20_TOKEN_LOCK, NATIVE_TOKEN_LOCK};
 use cw2::set_contract_version;
 
 use crate::msg::{CosmosToken, QueryAdmin};
-use cosmwasm_std::{
-    entry_point, to_binary, Attribute, BankMsg, Binary, CodeInfoResponse, Deps, DepsMut, Env,
-    Event, MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg,
-};
+use cosmwasm_std::{entry_point, to_binary, Attribute, BankMsg, Binary, CodeInfoResponse, Deps, DepsMut, Env, Event, MessageInfo, Response, StdResult, SubMsg, Uint128, WasmMsg, HexBinary};
 use cw20::{Balance, Cw20CoinVerified};
+// use crate::tests::mock::get_cw20_code_id;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
     _env: Env,
     info: MessageInfo,
-    _msg: InstantiateMsg,
+    msg: InstantiateMsg,
 ) -> StdResult<Response> {
     set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION)?;
 
     // from string to address.
     // let admin = deps.api.addr_validate(info.sender)?;
     // call admin method to save account
+    set_cw20_code_id(deps.storage, msg.cw20_code_id)?;
     ADMIN.set(deps, Some(info.sender))?;
 
     Ok(Response::new())
@@ -62,6 +61,12 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         // call admin member method to get admin account
         QueryAdmin {} => to_binary(&ADMIN.query_admin(deps)?),
+        QueryCw20Address {erc20_address} => {
+            let cw20_address = get_cw20_via_eth_address(deps.storage, &erc20_address);
+            to_binary(&Cw20AddressResponse {
+                cw20_address,
+            })
+        },
     }
 }
 
@@ -71,7 +76,7 @@ fn execute_bridge_claim(
     _info: MessageInfo,
     claims: &Vec<EthClaim>,
 ) -> Result<Response, ContractError> {
-    let code_id = 0_u64;
+    let code_id = get_cw20_code_id(deps.storage).map_err(|_| ContractError::Unauthorized{})?;
     let mut messages: Vec<SubMsg> = vec![];
 
     for claim in claims.iter() {
@@ -118,6 +123,9 @@ fn execute_bridge_claim(
                     None => {
                         let CodeInfoResponse { checksum, .. } =
                             deps.querier.query_wasm_code_info(code_id)?;
+
+                        let checksum = HexBinary::from(&[0]);
+
                         let (address, message) = create_cw20_contract(
                             deps.storage,
                             deps.api,

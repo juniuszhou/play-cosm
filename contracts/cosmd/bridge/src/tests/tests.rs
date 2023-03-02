@@ -6,11 +6,73 @@ use cw_utils::NativeBalance;
 
 use super::mock::{
     create_cw20_contract, execute_cw20_allowance, query_cw20_allowance, query_cw20_balance, COSMOS,
-    ETH_ADDRESS,
+    ETH_ADDRESS, store_cw20_code,
 };
 use crate::contract::{execute, instantiate, query};
 use crate::msg::{CosmosToken, EthClaim, ExecuteMsg, InstantiateMsg, QueryMsg};
 use crate::tests::mock::CW20_AMOUNT;
+use crate::state::{set_cw20_via_eth_address,};
+
+#[test]
+fn test_bridge_claim_new_erc20() {
+    let sender = Addr::unchecked("sender");
+    let admin = Addr::unchecked("admin");
+    let receiver = Addr::unchecked("receiver");
+    let init_amount = 100;
+    let claim_amount = 10_u128;
+
+    let mut app = App::default();
+    let cw20_code_id = store_cw20_code(&mut app);
+
+    let code = ContractWrapper::new(execute, instantiate, query);
+    let code_id = app.store_code(Box::new(code));
+    let contract_addr = app
+        .instantiate_contract(
+            code_id,
+            admin,
+            &InstantiateMsg {cw20_code_id},
+            &[],
+            "Contract",
+            // this admin ignored, don't know how to use it.
+            None,
+        )
+        .unwrap();
+
+
+    // let cw20_address = create_cw20_contract(&mut app, &contract_addr);
+    //
+    // let contract_balance = query_cw20_balance(&app, &cw20_address, &contract_addr);
+
+    // assert_eq!(contract_balance.u128(), CW20_AMOUNT);
+
+    // set_cw20_via_eth_address(app.sto)
+
+    let claim_message = ExecuteMsg::BridgeClaim {
+        claims: vec![EthClaim {
+            claim_hash: "00".to_string(),
+            token_address: ETH_ADDRESS.to_string(),
+            cosmos_token: None,
+            receiver: receiver.to_string(),
+            amount: claim_amount,
+        }],
+    };
+
+    app.execute_contract(
+        sender.clone(),
+        contract_addr.clone(),
+        &claim_message,
+        &vec![],
+    )
+        .unwrap();
+
+    assert_eq!(true, false);
+    // let contract_balance = query_cw20_balance(&mut app, &cw20_address, &contract_addr);
+    // assert_eq!(contract_balance.u128(), init_amount - claim_amount);
+    //
+    // let receiver_balance = query_cw20_balance(&app, &cw20_address, &receiver);
+    //
+    // assert_eq!(receiver_balance.u128(), claim_amount);
+}
 
 #[test]
 fn test_bridge_claim_cw20() {
@@ -21,6 +83,7 @@ fn test_bridge_claim_cw20() {
     let claim_amount = 10_u128;
 
     let mut app = App::default();
+    let cw20_code_id = store_cw20_code(&mut app);
 
     let code = ContractWrapper::new(execute, instantiate, query);
     let code_id = app.store_code(Box::new(code));
@@ -28,7 +91,7 @@ fn test_bridge_claim_cw20() {
         .instantiate_contract(
             code_id,
             admin,
-            &InstantiateMsg {},
+            &InstantiateMsg {cw20_code_id},
             &[],
             "Contract",
             // this admin ignored, don't know how to use it.
@@ -36,7 +99,7 @@ fn test_bridge_claim_cw20() {
         )
         .unwrap();
 
-    let cw20_address = create_cw20_contract(&mut app, &contract_addr);
+    let cw20_address = create_cw20_contract(&mut app, &contract_addr, cw20_code_id);
 
     let contract_balance = query_cw20_balance(&app, &cw20_address, &contract_addr);
 
@@ -79,12 +142,14 @@ fn test_bridge_claim_native() {
     let init_amount = 100;
     let claim_amount = 10_u128;
 
+
     let mut app = App::new(|router, _api, storage| {
         router
             .bank
             .init_balance(storage, &sender, coins(init_amount, COSMOS))
             .unwrap();
     });
+    let cw20_code_id = store_cw20_code(&mut app);
 
     let code = ContractWrapper::new(execute, instantiate, query);
     let code_id = app.store_code(Box::new(code));
@@ -92,7 +157,7 @@ fn test_bridge_claim_native() {
         .instantiate_contract(
             code_id,
             admin,
-            &InstantiateMsg {},
+            &InstantiateMsg {cw20_code_id},
             &[],
             "Contract",
             // this admin ignored, don't know how to use it.
@@ -163,6 +228,7 @@ fn test_burn() {
     let eth_receiver = ETH_ADDRESS;
 
     let mut app = App::default();
+    let cw20_code_id = store_cw20_code(&mut app);
 
     let code = ContractWrapper::new(execute, instantiate, query);
     let code_id = app.store_code(Box::new(code));
@@ -170,7 +236,7 @@ fn test_burn() {
         .instantiate_contract(
             code_id,
             admin,
-            &InstantiateMsg {},
+            &InstantiateMsg {cw20_code_id},
             &[],
             "Contract",
             // this admin ignored, don't know how to use it.
@@ -178,7 +244,7 @@ fn test_burn() {
         )
         .unwrap();
 
-    let cw20_address = create_cw20_contract(&mut app, &sender);
+    let cw20_address = create_cw20_contract(&mut app, &sender, cw20_code_id);
 
     let sender_balance = query_cw20_balance(&mut app, &cw20_address, &sender);
     assert_eq!(init_amount, sender_balance.u128());
@@ -227,6 +293,7 @@ fn test_lock_cw20() {
     let eth_receiver = ETH_ADDRESS;
 
     let mut app = App::default();
+    let cw20_code_id = store_cw20_code(&mut app);
 
     let code = ContractWrapper::new(execute, instantiate, query);
     let code_id = app.store_code(Box::new(code));
@@ -234,7 +301,7 @@ fn test_lock_cw20() {
         .instantiate_contract(
             code_id,
             admin,
-            &InstantiateMsg {},
+            &InstantiateMsg {cw20_code_id},
             &[],
             "Contract",
             // this admin ignored, don't know how to use it.
@@ -242,7 +309,7 @@ fn test_lock_cw20() {
         )
         .unwrap();
 
-    let cw20_address = create_cw20_contract(&mut app, &sender);
+    let cw20_address = create_cw20_contract(&mut app, &sender, cw20_code_id);
 
     let sender_balance = query_cw20_balance(&mut app, &cw20_address, &sender);
     assert_eq!(init_amount, sender_balance.u128());
@@ -296,6 +363,7 @@ fn test_lock_native() {
             .init_balance(storage, &sender, coins(init_amount, COSMOS))
             .unwrap();
     });
+    let cw20_code_id = store_cw20_code(&mut app);
 
     let code = ContractWrapper::new(execute, instantiate, query);
     let code_id = app.store_code(Box::new(code));
@@ -304,7 +372,7 @@ fn test_lock_native() {
             code_id,
             // set admin address as sender
             admin,
-            &InstantiateMsg {},
+            &InstantiateMsg {cw20_code_id},
             &[],
             "Contract",
             // this admin ignored, don't know how to use it.
@@ -359,6 +427,7 @@ fn test_lock_native() {
 #[test]
 fn check_admin() {
     let mut app = App::default();
+    let cw20_code_id = store_cw20_code(&mut app);
     let address_string = "admin";
     let admin_address = Addr::unchecked(address_string);
 
@@ -370,7 +439,7 @@ fn check_admin() {
             code_id,
             // set admin address as sender
             admin_address,
-            &InstantiateMsg {},
+            &InstantiateMsg {cw20_code_id},
             &[],
             "Contract",
             // this admin ignored, don't know how to use it.
@@ -389,6 +458,7 @@ fn check_admin() {
 fn test_query_admin() {
     let sender = Addr::unchecked("owner");
     let mut app = App::default();
+    let cw20_code_id = store_cw20_code(&mut app);
 
     let code = ContractWrapper::new(execute, instantiate, query);
     let code_id = app.store_code(Box::new(code));
@@ -397,7 +467,7 @@ fn test_query_admin() {
         .instantiate_contract(
             code_id,
             sender.clone(),
-            &InstantiateMsg {},
+            &InstantiateMsg {cw20_code_id},
             &[],
             "Contract",
             None,

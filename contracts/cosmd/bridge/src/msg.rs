@@ -1,12 +1,14 @@
 use cosmwasm_schema::{cw_serde, QueryResponses};
-use cosmwasm_std::Coin;
+use cosmwasm_std::{Coin, Addr};
 use cw20::{Balance, Cw20CoinVerified};
 use cw_controllers::AdminResponse;
 
 // For bridge contract, we need admin to do lot of things.
 // So use the sender as default admin, can update it via admin interface
 #[cw_serde]
-pub struct InstantiateMsg {}
+pub struct InstantiateMsg {
+    pub cw20_code_id: u64,
+}
 
 #[cw_serde]
 pub enum CosmosToken {
@@ -51,32 +53,21 @@ pub enum ExecuteMsg {
 pub enum QueryMsg {
     #[returns(AdminResponse)]
     QueryAdmin {},
+    #[returns(Cw20AddressResponse)]
+    QueryCw20Address {erc20_address: String},
 }
 
 #[cw_serde]
 pub struct QueryAdmin {}
 
 #[cw_serde]
-pub struct GreetResp {
-    pub message: String,
+pub struct QueryCw20Address {
+    pub erc20_address: String,
 }
 
 #[cw_serde]
-pub struct QueryMyMap {
-    pub key: u64,
-}
-
-#[cw_serde]
-pub struct QueryMyMapResp {
-    pub result: String,
-}
-
-#[cw_serde]
-pub struct QueryMyItem {}
-
-#[cw_serde]
-pub struct QueryMyItemResp {
-    pub result: String,
+pub struct Cw20AddressResponse {
+    pub cw20_address: Option<Addr>,
 }
 
 #[cw_serde]

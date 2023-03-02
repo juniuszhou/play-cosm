@@ -12,6 +12,8 @@ pub const ETH_ADDRESS_TO_CW20: Map<String, Addr> = Map::new("eth_address_to_cw20
 
 pub const BRIDGE_TOKEN_INDEX: Item<u64> = Item::new("bridge_token_index");
 
+pub const CW20_CODE_ID: Item<u64> = Item::new("cw20_code_id");
+
 pub fn add_bridge_token(
     storage: &mut dyn Storage,
     eth_contract: &str,
@@ -31,6 +33,15 @@ pub fn get_cw20_via_eth_address(storage: &dyn Storage, eth_address: &str) -> Opt
         .ok()
 }
 
+pub fn set_cw20_via_eth_address(storage: &mut dyn Storage, eth_address: &str, cw20_address: Addr) -> StdResult<()> {
+    ETH_ADDRESS_TO_CW20
+        .update(storage, eth_address.to_string(), |_| -> StdResult<_> {
+            Ok(cw20_address)
+        })?;
+
+    Ok(())
+}
+
 pub fn get_next_bridge_token_index(storage: &mut dyn Storage) -> u64 {
     match BRIDGE_TOKEN_INDEX.load(storage) {
         Ok(index) => index + 1,
@@ -41,6 +52,13 @@ pub fn get_next_bridge_token_index(storage: &mut dyn Storage) -> u64 {
 pub fn update_bridge_token_index(storage: &mut dyn Storage) -> StdResult<()> {
     let next = get_next_bridge_token_index(storage);
     BRIDGE_TOKEN_INDEX.update(storage, |_| -> StdResult<_> { Ok(next) })?;
-
     Ok(())
+}
+
+pub fn set_cw20_code_id(storage: &mut dyn Storage, code_id: u64) -> StdResult<()> {
+    CW20_CODE_ID.save(storage, &code_id)
+}
+
+pub fn get_cw20_code_id(storage: &mut dyn Storage) -> StdResult<u64> {
+    CW20_CODE_ID.load(storage)
 }
