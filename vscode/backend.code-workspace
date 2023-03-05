@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../packages/wasmd"
+		},
+		{
+			"path": "../packages/relayer"
+		},
+		{
+			"path": "../packages/evmos"
+		}
+	],
+	"settings": {}
+}
