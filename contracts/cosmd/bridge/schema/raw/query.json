@@ -14,6 +14,27 @@
         }
       },
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "query_cw20_address"
+      ],
+      "properties": {
+        "query_cw20_address": {
+          "type": "object",
+          "required": [
+            "erc20_address"
+          ],
+          "properties": {
+            "erc20_address": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
     }
   ]
 }

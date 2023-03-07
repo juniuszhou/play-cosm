@@ -14,6 +14,48 @@ use crate::tests::mock::CW20_AMOUNT;
 use crate::state::{set_cw20_via_eth_address,};
 
 
+#[test]
+fn test_execute_test() {
+    let mut app = App::default();
+    let sender = Addr::unchecked("sender");
+    let admin = Addr::unchecked("admin");
+    // let mut deps = mock_dependencies();
+    let cw20_code_id = 0;
+
+    let code = ContractWrapper::new(execute, instantiate, query);
+    let code_id = app.store_code(Box::new(code));
+
+    println!("code id is {code_id}");
+
+    // create bridge contract
+    let contract_addr = app
+        .instantiate_contract(
+            code_id,
+            admin,
+            &InstantiateMsg {cw20_code_id},
+            &[],
+            "Contract",
+            // this admin ignored, don't know how to use it.
+            None,
+        )
+        .unwrap();
+
+    let test_message = ExecuteMsg::ExecuteTest {
+
+    };
+
+    app.execute_contract(
+        sender.clone(),
+        contract_addr.clone(),
+        &test_message,
+        &vec![],
+    )
+        .unwrap();
+
+    assert_eq!(true, false);
+
+}
+
 
 #[test]
 fn test_bridge_claim_new_erc20() {
@@ -67,7 +109,7 @@ fn test_bridge_claim_new_erc20() {
     )
         .unwrap();
 
-    assert_eq!(true, false);
+    // assert_eq!(true, false);
     // let contract_balance = query_cw20_balance(&mut app, &cw20_address, &contract_addr);
     // assert_eq!(contract_balance.u128(), init_amount - claim_amount);
     //

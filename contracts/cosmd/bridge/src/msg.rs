@@ -46,6 +46,7 @@ pub enum ExecuteMsg {
     BridgeClaim {
         claims: Vec<EthClaim>,
     },
+    ExecuteTest {},
 }
 
 #[cw_serde]

@@ -34,7 +34,7 @@ thiserror = { version = "1.0.23" }
 ethaddr = {verson = "0.1.2", default-features = false}
 # must use the feature library to disable all instantiate/execute/query exports
 cw20-base = {version = "1.0.0", features = ["library"]}
-cw20 = "1.0.0"
+cw20 = {version = "1.0.0"}
 cw2 = "1.0.0"
 
 [dev-dependencies]

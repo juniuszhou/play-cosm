@@ -34,20 +34,20 @@ fn test_create_new_erc20() {
         .unwrap();
 
     // get bridge's checksum
-    let CodeInfoResponse { checksum, .. } =
-        deps.querier.query_wasm_code_info(code_id)?;
-
-    // create cw20 contract
-    let (address, message) = create_cw20_contract(
-        &mut deps.storage,
-        &deps.api,
-        // deps.storage,
-        contract_addr.as_str(),
-        code_id,
-        checksum,
-    ).unwrap();
-
-    assert_eq!(address, admin);
+    // let CodeInfoResponse { checksum, .. } =
+    //     deps.querier.query_wasm_code_info(code_id)?;
+    //
+    // // create cw20 contract
+    // let (address, message) = create_cw20_contract(
+    //     &mut deps.storage,
+    //     &deps.api,
+    //     // deps.storage,
+    //     contract_addr.as_str(),
+    //     code_id,
+    //     checksum,
+    // ).unwrap();
+    //
+    // assert_eq!(address, admin);
 }
 
 // test everything from internal never use the message

@@ -53,6 +53,7 @@ pub fn execute(
             execute_lock(deps, env, info, &balances, &receiver)
         }
         ExecuteMsg::BridgeClaim { claims } => execute_bridge_claim(deps, env, info, &claims),
+        ExecuteMsg::ExecuteTest{} => execute_test(deps, env, info),
     }
 }
 
@@ -72,6 +73,18 @@ pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     }
 }
 
+fn execute_test(
+    deps: DepsMut,
+    env: Env,
+    _info: MessageInfo,
+) -> Result<Response, ContractError> {
+    let ContractInfoResponse { code_id, .. } = deps
+        .querier
+        .query_wasm_contract_info(env.contract.address)?;
+    let CodeInfoResponse { checksum, .. } = deps.querier.query_wasm_code_info(code_id)?;
+    Ok(Response::default())
+}
+
 fn execute_bridge_claim(
     deps: DepsMut,
     env: Env,
@@ -79,6 +92,7 @@ fn execute_bridge_claim(
     claims: &Vec<EthClaim>,
 ) -> Result<Response, ContractError> {
     let cw20_code_id = get_cw20_code_id(deps.storage).map_err(|_| ContractError::Unauthorized{})?;
+    let self_address = env.contract.address.clone().to_string();
 
     let ContractInfoResponse { code_id, .. } = deps
         .querier
@@ -137,7 +151,7 @@ fn execute_bridge_claim(
                             deps.storage,
                             deps.api,
                             // deps.storage,
-                            &env.contract.address.to_string(),
+                            &self_address,
                             code_id,
                             checksum,
                         )
