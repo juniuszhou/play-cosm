@@ -16,6 +16,30 @@ Successfully instantiated the contract
 
 
 
+## new cw 20 code
+✔ Waiting for tx D68D4C5AED9265B4C849CF7FE0916713276E144F37EDD6127ED7C173BC542261 to confirm...
+
+File /Users/junius/github/junius/play-cosm/contracts/archway/cw20/artifacts/cw20.wasm successfully uploaded
+  Chain Id: constantine-1
+  Tx Hash:  D68D4C5AED9265B4C849CF7FE0916713276E144F37EDD6127ED7C173BC542261
+  Code Id:  298
+
+✔ Downloading wasm file from constantine-1...
+Integrity check Ok!
+
+Instantiating cw20 0.1.0 from code id 298 on constantine-1...
+Fetching address for wallet j...
+archway1yhjvnzwcp0mgzcpzsu8nd7yz2wzy9jc9sa44dw
+✔ Waiting for tx 4E1DB1FF20E4955851322C8B434926C649CE7B6092838244F9A285D965280829 to confirm...
+
+Successfully instantiated the contract
+  Chain Id:  constantine-1
+  Tx Hash:   4E1DB1FF20E4955851322C8B434926C649CE7B6092838244F9A285D965280829
+  Address:   archway133j5datpdfh6td26w6xsvpnj335csnn0v02u4lvy5hfucs3j3euqxult48
+  Arguments:   {"name": "name", "symbol": "symbol", "decimals": 18, "initial_balances": []}
+
+
+
 
   ## cw 20 
 

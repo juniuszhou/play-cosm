@@ -13,3 +13,10 @@
 ## more query method to get status of bridge
 
 ## decimal conversion 
+
+cosmwasm-ts-codegen generate \
+--plugin client \
+--schema ./schema \
+--out ./ts \
+--name counter \
+--no-bundle

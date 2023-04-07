@@ -10,3 +10,16 @@ npm install -g @archwayhq/cli
 git clone git@github.com:archway-network/archway.git
 cd archway
 
+
+
+## create new project 
+archway new 
+
+## create local account
+archway accounts --add "j"
+
+## deploy
+archway deploy 
+archway deploy --no-build
+
+##

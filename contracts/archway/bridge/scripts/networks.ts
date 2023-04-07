@@ -27,4 +27,4 @@ function read_config() {
   console.log('network is ', json['network'])
 }
 
-read_config();
+// read_config();

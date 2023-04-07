@@ -3,6 +3,10 @@
 ## wasmd repo https://github.com/juniuszhou/wasmd
 branch dev
 
+
+## template
+https://github.com/CosmWasm/cw-template/
+
 ## commands
 
 ### compilation

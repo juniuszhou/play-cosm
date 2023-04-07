@@ -11,6 +11,22 @@
         "project": "cw20",
         "type": "instantiate",
         "chainId": "constantine-1",
+        "codeId": 298,
+        "txhash": "4E1DB1FF20E4955851322C8B434926C649CE7B6092838244F9A285D965280829",
+        "address": "archway133j5datpdfh6td26w6xsvpnj335csnn0v02u4lvy5hfucs3j3euqxult48",
+        "admin": "archway1yhjvnzwcp0mgzcpzsu8nd7yz2wzy9jc9sa44dw"
+      },
+      {
+        "project": "cw20",
+        "type": "store",
+        "chainId": "constantine-1",
+        "codeId": 298,
+        "txhash": "D68D4C5AED9265B4C849CF7FE0916713276E144F37EDD6127ED7C173BC542261"
+      },
+      {
+        "project": "cw20",
+        "type": "instantiate",
+        "chainId": "constantine-1",
         "codeId": 233,
         "txhash": "A96B7965E445DF3289282CC3356023912CB677AA85A8B03C3AF602B7B8B5111B",
         "address": "archway1tl7af6tcznnss7qzmcncuex2apdtcp0uwjwqq33ragpc4vpk2s9q74g6cm",

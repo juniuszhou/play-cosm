@@ -1,5 +1,6 @@
 packages/
 .keys
 **/.keys
+**/.env
 **/target/
 **/node_modules

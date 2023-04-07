@@ -3,6 +3,12 @@
 ## book 
 https://book.cosmwasm.com/
 
+## tools 
+
+install check tool
+
+cargo install cosmwasm-check
+
 ## command 
 
 ### query state

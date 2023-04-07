@@ -4,7 +4,7 @@
   "description": "Scripts to deploy",
   "main": "index.js",
   "scripts": {
-    "upload_contract": "ts-node ./scripts/upload_contract.ts",
+    "upload": "ts-node ./scripts/upload_contract.ts",
     "fix": "eslint --fix \"./src/**/*.ts\" \"./scripts/*/*.ts\"",
     "lint": "eslint --max-warnings 0 \"./src/**/*.ts\" \"./scripts/**/*.ts\""
   },

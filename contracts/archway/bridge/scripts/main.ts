@@ -3,7 +3,7 @@ import { connect } from "./helpers/connect";
 import { Constantine } from "./networks";
 import { hitFaucet } from "./helpers/hitFaucet";
 import { uploadContracts } from "./helpers/uploadContracts";
-import { initToken, getTokenInfo } from "./helpers/initToken";
+import { initToken, getTokenInfo, signTx } from "./helpers/initToken";
 
 const contracts: Contract[] = [
   {
@@ -16,11 +16,15 @@ async function main(): Promise<void> {
   const config = Constantine
   const mnemonic = getMnemonic();
   const {client, address} = await connect(mnemonic, config)
+
+  console.log("account address is ", address);
   let {amount} = await client.getBalance(address, config.feeToken)
   console.log("current amount is ", amount);
 
-  const cw20Address = "archway1tl7af6tcznnss7qzmcncuex2apdtcp0uwjwqq33ragpc4vpk2s9q74g6cm";
+  const cw20Address = "archway133j5datpdfh6td26w6xsvpnj335csnn0v02u4lvy5hfucs3j3euqxult48";
   await getTokenInfo(client, cw20Address);
+
+  await signTx(client, address, cw20Address);
 
 }
 
