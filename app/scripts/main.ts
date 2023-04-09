@@ -1,7 +1,5 @@
 
-import { Constantine } from "./networks";
-
-
+import { Constantine, Constantine2 } from "./networks";
 import {getCw20QueryClient, getCW20SigningClient, transfer} from "./helpers/arch";
 
 

@@ -20,6 +20,16 @@ export const Constantine: Network = {
   faucetUrl: "https://faucet.constantine-1.archway.tech",
 };
 
+
+export const Constantine2: Network = {
+  chainId: "constantine-2",
+  rpcEndpoint: "https://rpc.constantine-2.archway.tech",
+  prefix: "archway",
+  gasPrice: GasPrice.fromString("0.25uconst"),
+  feeToken: "uconst",
+  faucetUrl: "https://faucet.constantine-2.archway.tech",
+};
+
 function read_config() {
   let file = readFileSync('config.json');
   const content = file.toString();
