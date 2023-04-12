@@ -5,18 +5,23 @@ import {
 } from "cosmwasm";
 
 import { Network } from "../networks";
-const AccountIndex = 1;
+import {getMnemonic} from "./utils";
 
-export async function getSigningCosmWasmClient(mnemonic: string, network: Network) {
+export async function getSigningCosmWasmClient(network: Network) {
+  const mnemonic = getMnemonic();
   const { prefix, gasPrice, rpcEndpoint } = network;
   const hdPath = makeCosmoshubPath(0);
+  const AccountIndex = 0;
 
   // Setup signer
   const offlineSigner = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
     prefix,
     hdPaths: [hdPath],
   });
-  const { address } = (await offlineSigner.getAccounts())[AccountIndex];
+
+  console.log(`Connected to ${mnemonic}`);
+
+  const { address } = (await offlineSigner.getAccounts())[0];
   console.log(`Connected to ${address}`);
 
   // Init SigningCosmWasmClient client

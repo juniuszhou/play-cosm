@@ -1,29 +1,27 @@
 import { Contract, getMnemonic } from "./helpers/utils";
-import { connect } from "./helpers/connect";
-import { Constantine } from "./networks";
-import { hitFaucet } from "./helpers/hitFaucet";
+import { Constantine, Constantine2 } from "./networks";
 import { uploadContracts } from "./helpers/uploadContracts";
-import { initToken } from "./helpers/initToken";
+import {getSigningCosmWasmClient} from "./helpers/connect"
 
 const contracts: Contract[] = [
   {
-    name: "cw20_base",
-    wasmFile: "../counter/artifacts/counter.wasm",
+    name: "cw20",
+    wasmFile: "./scripts/contracts/cw20.wasm",
   },
 ];
 
 async function main(): Promise<void> {
-  const config = Constantine
+
+  const config = Constantine2;
+
+  console.log( "Constantine is ", Constantine);
+
   const mnemonic = getMnemonic();
-  const {client, address} = await connect(mnemonic, config)
+
+  const {client, address} = await getSigningCosmWasmClient(mnemonic, config)
+
   let {amount} = await client.getBalance(address, config.feeToken)
   console.log("current amount is ", amount);
-
-  if (amount === "0") {
-    await hitFaucet(address, config.feeToken, config.faucetUrl)
-    let {amount} = await client.getBalance(address, config.feeToken)
-    console.log(`new balance is ${amount}`)
-  }
 
   let {codeId} = await uploadContracts(client, address, contracts)
   if (codeId === undefined) {
