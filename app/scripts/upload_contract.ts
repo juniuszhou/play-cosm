@@ -1,4 +1,4 @@
-import { Contract, getMnemonic } from "./helpers/utils";
+import { Contract, downloadWasm, getMnemonic } from "./helpers/utils";
 import { Constantine, Constantine2 } from "./networks";
 import { uploadContracts } from "./helpers/uploadContracts";
 import {getSigningCosmWasmClient} from "./helpers/connect"
@@ -14,25 +14,18 @@ async function main(): Promise<void> {
 
   const config = Constantine2;
 
-  console.log( "Constantine is ", Constantine);
-
-  const mnemonic = getMnemonic();
-
-  const {client, address} = await getSigningCosmWasmClient(mnemonic, config)
+  const {client, address} = await getSigningCosmWasmClient(config)
 
   let {amount} = await client.getBalance(address, config.feeToken)
   console.log("current amount is ", amount);
 
-  let {codeId} = await uploadContracts(client, address, contracts)
+  let {codeId} = await downloadWasm(client, address, contracts)
   if (codeId === undefined) {
     console.log("upload contract failed, exit")
     return
   }
   console.log(`code is ${codeId}`)
 
-
-  // const contractAddress = await initToken(client, address, codeId)
-  // console.log(`contract address is ${contractAddress}`)
 }
 
 main().then(

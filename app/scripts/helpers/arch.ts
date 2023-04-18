@@ -46,8 +46,3 @@ export async function printCount() {
   console.log("counter is ", token_info);
 }
 
-export async function transfer(cw20SigningClient: Cw20Client, amount: string, recipient: string) {
-  const result = await cw20SigningClient.transfer({amount, recipient});
-
-  console.log("result as ", result);
-}
