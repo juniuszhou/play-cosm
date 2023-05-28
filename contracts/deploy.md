@@ -51,9 +51,6 @@ Successfully instantiated the contract
  "minter_response": {"minter": "archway1yhjvnzwcp0mgzcpzsu8nd7yz2wzy9jc9sa44dw", "cap": ""}}
 
 
-
-
-
 Optimized wasm binary saved to artifacts/cw20.wasm
 
 ✔ Send tx from which wallet in your keychain? (e.g. "main" or crtl+c to quit) … j

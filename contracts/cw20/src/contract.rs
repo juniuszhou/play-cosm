@@ -207,6 +207,10 @@ pub fn execute(
             marketing,
         } => execute_update_marketing(deps, env, info, project, description, marketing),
         ExecuteMsg::UploadLogo(logo) => execute_upload_logo(deps, env, info, logo),
+        ExecuteMsg::UpdateMinter {new_minter: _} => {
+            // execute_transfer(deps, env, info, recipient, amount)
+            Ok(Response::default())
+        },
     }
 }
 

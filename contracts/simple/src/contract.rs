@@ -17,9 +17,9 @@ pub fn instantiate(
     msg: InstantiateMsg,
 ) -> StdResult<Response> {
     // from string to address.
-    let admin = deps.api.addr_validate(&msg.admin)?;
+    // let admin = deps.api.addr_validate(&msg.admin)?;
     // call admin method to save account
-    ADMIN.set(deps.branch(), Some(admin))?;
+    // ADMIN.set(deps.branch(), Some(admin))?;
 
     Ok(Response::new())
 }

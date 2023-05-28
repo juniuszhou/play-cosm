@@ -120,13 +120,13 @@
   },
   "network": {
     "name": "constantine",
-    "chainId": "constantine-2",
+    "chainId": "constantine-3",
     "type": "testnet",
     "fees": {
-      "feeDenom": "uconst"
+      "feeDenom": "aconst"
     },
     "gas": {
-      "prices": "0.002uconst",
+      "prices": "0.002aconst",
       "mode": "auto",
       "adjustment": "1.5"
     },
@@ -138,11 +138,11 @@
     },
     "urls": {
       "rpc": {
-        "url": "https://rpc.constantine-2.archway.tech",
+        "url": "https://rpc.constantine.archway.tech",
         "port": 443
       },
       "faucets": [
-        "https://faucet.constantine-2.archway.tech"
+        "https://faucet.constantine.archway.tech"
       ]
     }
   }
